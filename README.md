@@ -1,5 +1,6 @@
 
-# Reto: Servidor Web No Concurrente en Java
+# Semana 3m Meta y POJO
+
 
 Este proyecto es la solución a un reto académico que consiste en implementar un servidor web sencillo en **Java** sin el uso de frameworks externos (como Spark o Spring). El servidor debe:
 - Atender múltiples solicitudes de manera secuencial (no concurrente).

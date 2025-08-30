@@ -9,10 +9,17 @@ public class MicroSpringBoot {
         String controllerClassName = args[0];
         Class<?> controllerClass = Class.forName(controllerClassName);
         if (controllerClass.isAnnotationPresent(RestController.class)) {
-            System.out.println("Controlador cargado: " + controllerClassName);
+            System.out.println("Controlador: " + controllerClassName);
             
+            java.lang.reflect.Method[] methods = controllerClass.getDeclaredMethods();
+            for (java.lang.reflect.Method method : methods) {
+                if (method.isAnnotationPresent(GetMapping.class)) {
+                    GetMapping mapping = method.getAnnotation(GetMapping.class);
+                    System.out.println("Endpoint detectado: " + mapping.value() + method.getName());
+                }
+            }
         } else {
-            System.out.println("La clase no tiene la anotación @RestController");
+            System.out.println("No se encuentra");
         }
     }
 }

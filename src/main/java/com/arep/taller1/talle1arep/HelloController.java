@@ -4,6 +4,6 @@ package com.arep.taller1.talle1arep;
 public class HelloController {
     @GetMapping("/")
     public String index() {
-        return "Hola";
+        return "Hola AREP de Ivan";
     }
 }

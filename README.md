@@ -7,11 +7,15 @@ Este proyecto es la solución a un reto académico que consiste en implementar u
 - Leer y retornar archivos del disco local, incluyendo páginas HTML, archivos JavaScript, CSS e imágenes.
 - Permitir la construcción de una aplicación web de prueba que consuma servicios REST de forma asíncrona desde el frontend.
 - Utilizar únicamente Java y las librerías estándar para el manejo de red y archivos.
+- Anotaciones personalizadas.
+- Visualización de archivos estáticos en una ruta especifica. 
+- Expone servicios Rest. 
 
 ## Objetivos del reto
 - Demostrar el manejo de sockets y protocolos HTTP en Java puro.
 - Servir archivos estáticos y recursos web desde el backend.
-- Implementar servicios REST simples y consumirlos desde el frontend usando JavaScript asíncrono.
+- Implementar servicios REST simples y consumirlos desde el frontend.
+- Implementación de servicios Rest.
 
 ### Puerto que vamos a utilizar
 ````
@@ -22,10 +26,10 @@ Puerto: 8080
 
 El servidor está implementado en la clase principal `HttpServer.java` y funciona de la siguiente manera:
 
-1. **Escucha en un puerto TCP (35003)** usando `ServerSocket` y acepta conexiones de clientes de forma secuencial (no concurrente).
+1. **Escucha en un puerto TCP (8080)** usando `ServerSocket` y acepta conexiones de clientes de forma secuencial (no concurrente).
 2. **Procesa cada solicitud HTTP** leyendo la primera línea para identificar el método y la ruta solicitada.
 3. **Manejo de archivos estáticos:**
-    - Si la ruta corresponde a un archivo existente en `src/main/resources/public`, el servidor lee el archivo del disco y lo retorna con el tipo MIME adecuado (HTML, CSS, JS, imágenes, etc.).
+    - Si la ruta corresponde a un archivo existente en `target/classes/webroot`, el servidor lee el archivo del disco y lo retorna con el tipo MIME adecuado (HTML, CSS, JS, imágenes, etc.).
 4. **Manejo de servicios REST:**
     - Si la ruta solicitada corresponde a un endpoint especial (por ejemplo, `/hello`, `/hellopost`, `/app/hello`), el servidor ejecuta un método Java que genera la respuesta (texto o JSON), permitiendo la comunicación asíncrona desde el frontend.
 5. **Frontend de prueba:**
@@ -52,18 +56,24 @@ La estructura de directorios del proyecto es la siguiente:
 
 ```
 .
-└── src
-    ├── main
-    │   ├── java
-    │   │   └── com
-    │   │       └── arep
-    │   │           └── taller1
-    │   │               └── talle1arep
-    │   │                   └── HttpServer.java
-    │   └── resources
-    │       └── public
-    │           └── index.html
-    └── pom.xml
+├── pom.xml
+├── src
+│   ├── main
+│   │   ├── java/com/arep/taller1/talle1arep/
+│   │   │   ├── HttpServer.java
+│   │   │   ├── MicroSpringBoot.java
+│   │   │   ├── GetMapping.java
+│   │   │   ├── RequestParam.java
+│   │   │   ├── RestController.java
+│   │   │   ├── HelloController.java        
+│   │   │   └── GreetingController.java      
+│   │   └── resources/
+│   │       └── webroot/                    
+│   └── test
+│       └── java/com/arep/taller1/talle1arep/
+│           ├── RequestTest.java            
+│           └── HttpServerTest.java         
+
 ```
 
 ### Prerequisites
@@ -73,31 +83,37 @@ Debes tener instalado en tu equipo:
 - [Apache Maven](https://maven.apache.org/) 
 
 Verifica las versiones:
-- $ java -version
-- $ mvn -version
+-  java -version
+-  mvn -version
 
 
 ### Instalación
 Clona este repositorio en tu máquina:
 ```
-git clone https://github.com/Ttowers-09/Lab_MicroframeworksWEB_AREP_IvanTorres.git
+git clone https://github.com/Ttowers-09/Lab3_Meta_protocolos-de-objetos_AREP_IvanTorres.git
 ```
 Accedemos a la carpeta:
 ```
-cd Lab_MicroframeworksWEB_AREP_IvanTorres
+cd Lab3_Meta_protocolos-de-objetos_AREP_IvanTorres
 ```
 
 ## Ejecución (Solo consola)
 
-Estando dentro de la carpeta Lab_MicroframeworksWEB_AREP_IvanTorres ejecutamos el siguiente  comando:
+Estando dentro de la carpeta Lab3_Meta_protocolos-de-objetos_AREP_IvanTorres ejecutamos el siguiente  comando:
 ```
-java -cp target/classes com.arep.taller1.talle1arep.HttpServer
+java -cp target/classes com.arep.taller1.talle1arep.MicroSpringBoot
 ```
 
 
 la consola se quedará esperando respuesta asi que nos dirigimos a nuestro browser y escribimos:
 ```
 http://localhost:8080
+```
+aqui visualizaremos el mensaje "Hola".
+
+Si queremos ver nuestro archivo index:
+```
+http://localhost:8080/index.html
 ```
 
 ## Ejecución (Con Maven)
@@ -162,11 +178,35 @@ http://localhost:8080/index.html
 - Podemos visualizar los archivos estaticos definiendolos en nuestras URL, de la siguiente manera:
 ![Evidencia](src/main/resources/imgReadme/estatico.png)
 
-además de eso, en el index podemos encontar botones para ver los archivos:
+además de eso, en el index podemos encontrar botones para ver los archivos:
 ![Evidencia](src/main/resources/imgReadme/estatico2.png)
 
+## Arquitectura Backend:
+- @RestController: presenta las clases que exponen los servicios web.
+- @GetMapping: Métodos que involucran un GET.
+- @RequestParam: Inyecta parámetros a las solicitudes de nuestro servidor.
+- Servidor HTTP: Resuelve nuestros métodos get y post, además de eso presenta archivos estáticos en nuestro servidor.
+
+## Endpoints de nuestro código:
+- Método **Get** en la ruta **/** con respuesta **Hola AREP de Ivan**
+- Método **Get** en la ruta **/greeting** con respuesta **Hola AREP**
+- Método **Get** en la ruta **/greeting?name=Ivan** con respuesta **Hola Ivan**
+
+- Método **Get** en la ruta **/App/hello?name=Ivan** con respuesta **Hola Ivan**
+- Método **Get** en la ruta **/App/hello** con respuesta **Hola desconocido**
+- Método **Get** en la ruta **/App/pi** con respuesta **3.141592653589793**
+-
+
+**Visibilidad de archivos estáticos:**
+- http://localhost:8080/index.html: veremos el archivo index.html el cual contendrá los métodos Get, Post, visibilidad de código style.css e imagen.
+
+- http://localhost:8080/style.css: Veremos el codigo Css de la página.
+
+- http://localhost:8080/IMAGEN.jpg: Veremos una imagen estática igual a la que se encuentra en el index.html.
+
+
 ## Ejecutar los Test:
-- Los test se encuentran en la carpeta: ../test/java/com/arep/taller1/talle1.arep
+- Los test se encuentran en la carpeta: ../test/java/com/arep/taller1/talle1arep
 
 - Para ejecutar los test utilizamos el siguiente comando:
 ```
